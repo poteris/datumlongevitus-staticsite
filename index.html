@@ -370,15 +370,14 @@ html{scroll-behavior:smooth}
 .pa-p1 .links.open a:nth-child(2){transition-delay:.05s}.pa-p1 .links.open a:nth-child(3){transition-delay:.1s}.pa-p1 .links.open a:nth-child(4){transition-delay:.15s}.pa-p1 .links.open a:nth-child(5){transition-delay:.2s}.pa-p1 .links.open a:nth-child(6){transition-delay:.25s}.pa-p1 .links.open a:nth-child(7){transition-delay:.3s}.pa-p1 .links.open a:nth-child(8){transition-delay:.35s}
 .pa-p1 .links .btn{width:auto;margin-top:24px;min-height:56px;padding:0 28px;font-size:15px;letter-spacing:.08em}
 }
-/* DESKTOP HEADER — big centred logo on its own row, centred menu below; logo compacts once scrolled */
-@media (min-width: 1101px){
-.pa-p1 .nav-in{flex-direction:column;justify-content:flex-start;align-items:center;gap:32px;padding-top:22px;padding-bottom:14px;transition:padding .4s cubic-bezier(.2,.8,.2,1),gap .4s cubic-bezier(.2,.8,.2,1)}
-.pa-p1 .logo-img{height:142px;transition:height .4s cubic-bezier(.2,.8,.2,1)}
-.pa-p1 .links{justify-content:center}
-.pa-p1 .nav[data-scrolled] .nav-in{gap:10px;padding-top:12px;padding-bottom:10px}
-.pa-p1 .nav[data-scrolled] .logo-img{height:52px}
-.pa-p1 [id]{scroll-margin-top:136px}
-.pa-p1 .hero{padding-top:72px}
+/* WORDMARK — text logo */
+.pa-p1 .wm{display:inline-flex;align-items:center;color:#EEF2F1;white-space:nowrap}
+.pa-p1 .wm-t{display:flex;align-items:baseline;gap:.32em;font-size:21px;line-height:1;letter-spacing:-.01em;text-transform:uppercase}
+.pa-p1 .wm-t strong{font-weight:700}
+.pa-p1 .wm-t span{font-weight:300;color:#DCE4E4}
+.pa-p1 .logo:hover .wm-t span{color:var(--acc)}
+@media (max-width: 600px){
+.pa-p1 .wm-t{font-size:17px}
 }
 /* MOBILE ONLY (phones) — desktop untouched */
 @media (max-width: 700px){
@@ -785,14 +784,14 @@ html{scroll-behavior:smooth}
 .pa-p2 .links.open a:nth-child(2){transition-delay:.05s}.pa-p2 .links.open a:nth-child(3){transition-delay:.1s}.pa-p2 .links.open a:nth-child(4){transition-delay:.15s}.pa-p2 .links.open a:nth-child(5){transition-delay:.2s}.pa-p2 .links.open a:nth-child(6){transition-delay:.25s}.pa-p2 .links.open a:nth-child(7){transition-delay:.3s}.pa-p2 .links.open a:nth-child(8){transition-delay:.35s}
 .pa-p2 .links .btn{width:auto;margin-top:24px;min-height:56px;padding:0 28px;font-size:15px;letter-spacing:.08em}
 }
-/* DESKTOP HEADER — big centred logo on its own row, centred menu below; logo compacts once scrolled */
-@media (min-width: 1101px){
-.pa-p2 .nav-in{flex-direction:column;justify-content:flex-start;align-items:center;gap:32px;padding-top:22px;padding-bottom:14px;transition:padding .4s cubic-bezier(.2,.8,.2,1),gap .4s cubic-bezier(.2,.8,.2,1)}
-.pa-p2 .logo-img{height:142px;transition:height .4s cubic-bezier(.2,.8,.2,1)}
-.pa-p2 .links{justify-content:center}
-.pa-p2 .nav[data-scrolled] .nav-in{gap:10px;padding-top:12px;padding-bottom:10px}
-.pa-p2 .nav[data-scrolled] .logo-img{height:52px}
-.pa-p2 [id]{scroll-margin-top:136px}
+/* WORDMARK — text logo */
+.pa-p2 .wm{display:inline-flex;align-items:center;color:#EEF2F1;white-space:nowrap}
+.pa-p2 .wm-t{display:flex;align-items:baseline;gap:.32em;font-size:21px;line-height:1;letter-spacing:-.01em;text-transform:uppercase}
+.pa-p2 .wm-t strong{font-weight:700}
+.pa-p2 .wm-t span{font-weight:300;color:#DCE4E4}
+.pa-p2 .logo:hover .wm-t span{color:var(--acc)}
+@media (max-width: 600px){
+.pa-p2 .wm-t{font-size:17px}
 }
 /* MOBILE ONLY (phones) — desktop untouched */
 @media (max-width: 700px){
@@ -821,7 +820,7 @@ html{scroll-behavior:smooth}
 <header class="nav">
 <div class="wrap nav-in">
 <a class="logo" href="#top" aria-label="Datum Longevitus home" data-navclick>
-<span class="logo-img" role="img" aria-label="Datum Longevitus"><img class="logo-mk" src="assets/logo-mark.webp" alt=""><img class="logo-wm" src="assets/logo-wordmark-white.svg" alt=""></span>
+<span class="wm" aria-hidden="true"><span class="wm-t"><strong>Datum</strong><span>Longevitus</span></span></span>
 </a>
 <nav class="links" id="pa-menu" aria-label="Main" data-navclick><a href="#top">Home</a><a href="#stories">Proof</a><a href="#about">Between the dots</a><a href="#protect">DATA SHARING</a><a href="#name">The name</a><a href="#testimonials">ADVOCATES</a><a class="btn" href="#contact">CONTACT</a></nav>
 <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="pa-menu" data-toggle><span></span><span></span><span></span></button>
@@ -853,7 +852,7 @@ html{scroll-behavior:smooth}
 <div class="row row-b">
 <div>
 
-<p style="width: 649px">Datum Longevitus exists to use compliance to help values-led organisations and those special projects that benefit society, to accelerate. We want to help the special people in the charities and public bodies (big or small), and those who manage the unused datasets who know if they were used they could change the world for the better.</p>
+<p style="width: 649px"><b>Datum's Mission</b>: To create better lives by building effective data sharing solutions. As a socially trusted community engaged movement, we combine compliance-led technology and data protection expertise to support our clients improve and save lives.</p>
 </div>
 <div>
 <div class="ctas"><a class="btn" href="#contact" data-navclick>BOOK A CONSULTATION</a><a class="btn ghost" href="#proof">SEE THE EVIDENCE</a></div>
@@ -1182,7 +1181,7 @@ if (id !== 'top' && !el) return;
 e.preventDefault();
 let reduce = false;
 try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (err) {}
-const off = (id === 'stories') ? 0 : ((window.innerWidth || 0) > 1100 ? 132 : 76);
+const off = (id === 'stories') ? 0 : ((window.innerWidth || 0) > 1100 ? 84 : 76);
 const y = el ? el.getBoundingClientRect().top + (window.scrollY || 0) - off : 0;
 window.scrollTo({ top: Math.max(0, y), behavior: reduce ? 'auto' : 'smooth' });
 }
@@ -1940,7 +1939,7 @@ if (id !== 'top' && !el) return;
 e.preventDefault();
 let reduce = false;
 try { reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (err) {}
-const off = (id === 'stories') ? 0 : ((window.innerWidth || 0) > 1100 ? 132 : 76);
+const off = (id === 'stories') ? 0 : ((window.innerWidth || 0) > 1100 ? 84 : 76);
 const y = el ? el.getBoundingClientRect().top + (window.scrollY || 0) - off : 0;
 window.scrollTo({ top: Math.max(0, y), behavior: reduce ? 'auto' : 'smooth' });
 }
