@@ -48,9 +48,7 @@
 	],
 	"vars": {
 		"SITE_URL": "https://datumlongevitus.org",
-		// Turnstile site key (public; injected into the page). Currently Cloudflare's always-pass test
-		// key: replace with the datum-website widget's key. The secret is TURNSTILE_SECRET.
-		"TURNSTILE_SITE_KEY": "1x00000000000000000000AA",
+		"TURNSTILE_SITE_KEY": "0x4AAAAAAF5mPm4Wu6gRebx7", // always-pass test version: "1x00000000000000000000AA"
 		"FROM_ADDRESS": "info@datumlongevitus.org",
 		"FROM_NAME": "Datum Longevitus",
 		// Optional: gets a short notice for each confirmed signup. Empty string to disable.
