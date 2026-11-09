@@ -26,7 +26,10 @@ interface Signup {
 }
 
 const RESEND_COOLDOWN_MS = 10 * 60 * 1000;
-const EMAIL_RE = /^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]{2,}$/;
+// WHATWG HTML "valid email address" pattern, the same check browsers apply to <input type="email">.
+// https://html.spec.whatwg.org/multipage/input.html#valid-e-mail-address
+const EMAIL_RE =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
