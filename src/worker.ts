@@ -6,10 +6,10 @@ interface Env {
   EMAIL: SendEmail;
   SUBSCRIBE_LIMITER: RateLimit;
   TOKEN_SECRET: string;
+  TURNSTILE_SECRET: string;
   SITE_URL: string;
   FROM_ADDRESS: string;
   FROM_NAME: string;
-  REPLY_TO: string;
   NOTIFY_ADDRESS: string;
   SIGNUP_ENABLED: string;
   CONSENT_VERSION: string;
@@ -64,6 +64,10 @@ async function subscribe(request: Request, env: Env): Promise<Response> {
   // Honeypot: real visitors never see or fill this field.
   if (typeof body.website === "string" && body.website !== "") return json({ ok: true });
 
+  if (!(await turnstileOk(env, String(body.turnstile ?? ""), ip))) {
+    return json({ error: "challenge_failed" }, 403);
+  }
+
   const email = String(body.email ?? "").trim().toLowerCase();
   if (email.length > 254 || !EMAIL_RE.test(email)) return json({ error: "invalid_email" }, 400);
   if (body.consent !== true && body.consent !== "on" && body.consent !== "true") {
@@ -86,7 +90,6 @@ async function subscribe(request: Request, env: Env): Promise<Response> {
     await env.EMAIL.send({
       from: { email: env.FROM_ADDRESS, name: env.FROM_NAME },
       to: email,
-      replyTo: env.REPLY_TO,
       subject: "Your DPIA screening questions from Datum Longevitus",
       text: confirmText(link, ttlDays),
       html: confirmHtml(link, ttlDays),
@@ -140,6 +143,29 @@ async function confirm(url: URL, env: Env): Promise<Response> {
   headers.set("cache-control", "private, no-store");
   headers.set("x-robots-tag", "noindex");
   return new Response(pdf.body, { status: 200, headers });
+}
+
+// ---- Turnstile ----
+
+async function turnstileOk(env: Env, token: string, ip: string): Promise<boolean> {
+  if (!env.TURNSTILE_SECRET) {
+    console.error("TURNSTILE_SECRET is not set; rejecting signup");
+    return false;
+  }
+  if (!token || token.length > 2048) return false;
+  const form = new FormData();
+  form.append("secret", env.TURNSTILE_SECRET);
+  form.append("response", token);
+  if (ip !== "unknown") form.append("remoteip", ip);
+  try {
+    const res = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body: form });
+    const out = (await res.json()) as { success?: boolean; "error-codes"?: string[] };
+    if (!out.success) console.warn("turnstile rejected", out["error-codes"]);
+    return out.success === true;
+  } catch (err) {
+    console.error("turnstile verify failed", (err as Error).message);
+    return false;
+  }
 }
 
 // ---- signed tokens: base64url(email|expiry).base64url(HMAC-SHA256) ----

@@ -817,6 +817,7 @@ html{scroll-behavior:smooth}
 .signup-extra .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .signup-extra .consent{display:flex;gap:10px;align-items:flex-start;margin:14px 0 10px;font-size:14px;line-height:1.5;color:var(--ink);cursor:pointer}
 .signup-extra .consent input{margin-top:3px;width:16px;height:16px;flex:none;accent-color:var(--acc)}
+.signup-extra .cf-turnstile{margin:0 0 10px}
 .signup-extra .signup-status{min-height:1.5em;margin:0 0 10px;font-size:14px;color:var(--acc)}
 .signup-extra .signup-status:empty{display:none}
 </style>
@@ -1111,6 +1112,8 @@ html{scroll-behavior:smooth}
 <div class="signup"><input id="pa-email" name="email" type="email" required placeholder="you@organisation.org" autocomplete="email"><button type="submit">SUBSCRIBE</button></div>
 <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
 <label class="consent"><input type="checkbox" name="consent" required> Email me the DPIA screening questions and occasional updates from Datum Longevitus.</label>
+<!-- Turnstile site key: replace the test key below with the real one from the Cloudflare dashboard. -->
+<div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="dark" data-size="flexible" data-appearance="interaction-only"></div>
 <p class="signup-status" role="status" aria-live="polite"></p>
 <p class="fine">We will only use your email address to send you updates from Datum Longevitus. You can unsubscribe at any time. See our privacy notice for details.</p>
 </form>
@@ -1131,7 +1134,7 @@ html{scroll-behavior:smooth}
 </div>
 <div class="wrap foot">
 <span>© 2026 Datum Longevitus</span>
-<nav aria-label="Legal"><a href="#top">Privacy notice</a><a href="#top">Cookie policy</a><span>No tracking cookies</span></nav>
+<nav aria-label="Legal"><a href="#top">Privacy notice</a><span>No tracking cookies</span></nav>
 </div>
 </footer>
 </section>
@@ -2674,6 +2677,8 @@ onMove: h.onMove, onLeave: h.onLeave, toggleMenu: h.toggleMenu, closeMenu: h.clo
     invalid_email: 'Please enter a valid email address.',
     consent_required: 'Please tick the box to confirm you are happy for us to email you.',
     rate_limited: 'Too many attempts. Please try again in a minute.',
+    challenge_wait: 'Just a moment while we check you are not a bot, then try again.',
+    challenge_failed: 'We could not verify you are not a bot. Please try again.',
     disabled: 'Sign-up opens shortly. In the meantime, email info@datumlongevitus.org.',
     error: 'Something went wrong. Please try again, or email info@datumlongevitus.org.'
   };
@@ -2682,20 +2687,24 @@ onMove: h.onMove, onLeave: h.onLeave, toggleMenu: h.toggleMenu, closeMenu: h.clo
     var email = form.email.value.trim();
     if (!form.email.checkValidity() || !email) { say(MSG.invalid_email); form.email.focus(); return; }
     if (!form.consent.checked) { say(MSG.consent_required); form.consent.focus(); return; }
+    var tsInput = form.querySelector('[name="cf-turnstile-response"]');
+    var token = tsInput ? tsInput.value : '';
+    if (!token) { say(MSG.challenge_wait); return; }
     btn.disabled = true; say('Sending…');
     fetch(form.action, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ email: email, consent: true, website: form.website.value })
+      body: JSON.stringify({ email: email, consent: true, website: form.website.value, turnstile: token })
     }).then(function (r) { return r.json().catch(function () { return {}; }); })
       .then(function (d) {
         if (d && d.ok) { say(MSG.ok); form.reset(); }
         else say(MSG[d && d.error] || MSG.error);
       })
       .catch(function () { say(MSG.error); })
-      .then(function () { btn.disabled = false; });
+      .then(function () { btn.disabled = false; if (window.turnstile) window.turnstile.reset(form.querySelector('.cf-turnstile')); });
   });
 })();
 </script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </body>
 </html>

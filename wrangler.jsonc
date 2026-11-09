@@ -15,10 +15,11 @@
 		"html_handling": "auto-trailing-slash",
 		"not_found_handling": "none"
 	},
-	// Signups: one key per email address. Create with `npm run kv:create` and paste the id here.
+	// Signups: one key per email address. The namespace is `datum-website-signups`; "SIGNUPS" is the
+	// name the code uses (env.SIGNUPS), not the resource name, so leave it as is.
 	"kv_namespaces": [
 		{
-			"binding": "datum_website_signups",
+			"binding": "SIGNUPS",
 			"id": "93c5975bfec049ab99cc1fd65c22b151"
 		}
 	],
@@ -27,11 +28,11 @@
 		{
 			"name": "EMAIL",
 			"allowed_sender_addresses": [
-				"hello@datumlongevitus.org"
+				"info@datumlongevitus.org"
 			]
 		}
 	],
-	// Per-IP limit on /api/subscribe so the form can't be used to spray confirmation emails.
+	// Per-IP limit on /api/subscribe, a backstop behind Turnstile.
 	"ratelimits": [
 		{
 			"name": "SUBSCRIBE_LIMITER",
@@ -44,9 +45,8 @@
 	],
 	"vars": {
 		"SITE_URL": "https://datumlongevitus.org",
-		"FROM_ADDRESS": "hello@datumlongevitus.org",
+		"FROM_ADDRESS": "info@datumlongevitus.org",
 		"FROM_NAME": "Datum Longevitus",
-		"REPLY_TO": "info@datumlongevitus.org",
 		// Optional: gets a short notice for each confirmed signup. Empty string to disable.
 		"NOTIFY_ADDRESS": "info@datumlongevitus.org",
 		// Keep "false" until the privacy notice is published.
@@ -63,5 +63,5 @@
 	   { "pattern": "datumlongevitus.org", "custom_domain": true },
 	   { "pattern": "www.datumlongevitus.org", "custom_domain": true }
 	]
-	// Secret (not in this file): TOKEN_SECRET — set with `npx wrangler secret put TOKEN_SECRET`.
+	// Secrets (not in this file): TOKEN_SECRET and TURNSTILE_SECRET, set with `npx wrangler secret put <NAME>`.
 }
