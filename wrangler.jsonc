@@ -1,0 +1,48 @@
+// Cloudflare Worker + static assets for datumlongevitus.org.
+// Everything in ./public is served as-is. The Worker only runs for /api/* and /downloads/*.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "datumlongevitus",
+  "main": "src/worker.ts",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*", "/downloads/*"],
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  },
+  // Signups: one key per email address. Create with `npm run kv:create` and paste the id here.
+  "kv_namespaces": [
+    { "binding": "SIGNUPS", "id": "REPLACE_WITH_KV_NAMESPACE_ID" }
+  ],
+  // Cloudflare Email Service. The sender must be on a domain onboarded for Email Sending.
+  "send_email": [
+    { "name": "EMAIL", "allowed_sender_addresses": ["hello@datumlongevitus.org"] }
+  ],
+  // Per-IP limit on /api/subscribe so the form can't be used to spray confirmation emails.
+  "ratelimits": [
+    { "name": "SUBSCRIBE_LIMITER", "namespace_id": "1001", "simple": { "limit": 5, "period": 60 } }
+  ],
+  "vars": {
+    "SITE_URL": "https://datumlongevitus.org",
+    "FROM_ADDRESS": "hello@datumlongevitus.org",
+    "FROM_NAME": "Datum Longevitus",
+    "REPLY_TO": "info@datumlongevitus.org",
+    // Optional: gets a short notice for each confirmed signup. Empty string to disable.
+    "NOTIFY_ADDRESS": "info@datumlongevitus.org",
+    // Keep "false" until the privacy notice is published.
+    "SIGNUP_ENABLED": "false",
+    // Bump when the consent wording in public/index.html changes; stored with each signup.
+    "CONSENT_VERSION": "2026-11-09",
+    "PDF_PATH": "/downloads/dpia-screening-questions.pdf",
+    "LINK_TTL_DAYS": "7"
+  },
+  "observability": { "enabled": true }
+  // Uncomment once datumlongevitus.org is a zone in the same Cloudflare account:
+  // ,"routes": [
+  //   { "pattern": "datumlongevitus.org", "custom_domain": true },
+  //   { "pattern": "www.datumlongevitus.org", "custom_domain": true }
+  // ]
+  // Secret (not in this file): TOKEN_SECRET — set with `npx wrangler secret put TOKEN_SECRET`.
+}

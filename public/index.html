@@ -813,6 +813,12 @@ html{scroll-behavior:smooth}
 .pa-p2 .foot-top{padding-top:28px;padding-bottom:24px;gap:20px}
 }
 
+/* SIGNUP — consent, status, honeypot */
+.signup-extra .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.signup-extra .consent{display:flex;gap:10px;align-items:flex-start;margin:14px 0 10px;font-size:14px;line-height:1.5;color:var(--ink);cursor:pointer}
+.signup-extra .consent input{margin-top:3px;width:16px;height:16px;flex:none;accent-color:var(--acc)}
+.signup-extra .signup-status{min-height:1.5em;margin:0 0 10px;font-size:14px;color:var(--acc)}
+.signup-extra .signup-status:empty{display:none}
 </style>
 </head>
 <body>
@@ -857,7 +863,7 @@ html{scroll-behavior:smooth}
 <p style="width: 649px"><b>Datum's Mission</b>: To create better lives by building effective data sharing solutions. As a socially trusted community engaged movement, we combine compliance-led technology and data protection expertise to support our clients improve and save lives.</p>
 </div>
 <div>
-<div class="ctas"><a class="btn" href="#contact" data-navclick>BOOK A CONSULTATION</a><a class="btn ghost" href="#proof">SEE THE EVIDENCE</a></div>
+<div class="ctas"><a class="btn" href="https://app.reclaim.ai/m/james-robson/find-15-mins-to-chat" target="_blank" rel="noopener">BOOK A CONSULTATION</a><a class="btn ghost" href="#proof">SEE THE EVIDENCE</a></div>
 </div>
 </div>
 
@@ -1095,14 +1101,17 @@ html{scroll-behavior:smooth}
 <div class="talk-row">
 <div>
 <h3 class="mono">BOOK A CONSULTATION</h3>
-<a class="btn" href="#contact" style="min-height:64px;padding:0 36px;font-size:16px"><span>BOOK A CONSULTATION</span>
+<a class="btn" href="https://app.reclaim.ai/m/james-robson/find-15-mins-to-chat" target="_blank" rel="noopener" style="min-height:64px;padding:0 36px;font-size:16px"><span>BOOK A CONSULTATION</span>
 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5" stroke="currentColor" stroke-width="1.5"></path></svg></a>
 <br>
 <a class="email" href="mailto:info@datumlongevitus.org">info@datumlongevitus.org</a>
 </div>
-<form data-nosubmit>
+<form data-nosubmit data-signup action="/api/subscribe" method="post" novalidate>
 <label class="mono" for="pa-email">SUBSCRIBE TO UPDATED</label>
-<div class="signup"><input id="pa-email" type="email" placeholder="you@organisation.org" autocomplete="email"><button type="submit">SUBSCRIBE</button></div>
+<div class="signup"><input id="pa-email" name="email" type="email" required placeholder="you@organisation.org" autocomplete="email"><button type="submit">SUBSCRIBE</button></div>
+<input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+<label class="consent"><input type="checkbox" name="consent" required> Email me the DPIA screening questions and occasional updates from Datum Longevitus.</label>
+<p class="signup-status" role="status" aria-live="polite"></p>
 <p class="fine">We will only use your email address to send you updates from Datum Longevitus. You can unsubscribe at any time. See our privacy notice for details.</p>
 </form>
 </div>
@@ -2650,6 +2659,43 @@ onMove: h.onMove, onLeave: h.onLeave, toggleMenu: h.toggleMenu, closeMenu: h.clo
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();
 
+</script>
+<script>
+/* Newsletter signup: posts to the Worker at /api/subscribe, which emails a confirmation link for the DPIA PDF. */
+(function () {
+  var form = document.querySelector('form[data-signup]');
+  if (!form) return;
+  form.classList.add('signup-extra');
+  var status = form.querySelector('.signup-status');
+  var btn = form.querySelector('button[type=submit]');
+  var say = function (msg) { status.textContent = msg; };
+  var MSG = {
+    ok: 'Thanks. Check your inbox for a link to confirm and download the DPIA screening questions.',
+    invalid_email: 'Please enter a valid email address.',
+    consent_required: 'Please tick the box to confirm you are happy for us to email you.',
+    rate_limited: 'Too many attempts. Please try again in a minute.',
+    disabled: 'Sign-up opens shortly. In the meantime, email info@datumlongevitus.org.',
+    error: 'Something went wrong. Please try again, or email info@datumlongevitus.org.'
+  };
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = form.email.value.trim();
+    if (!form.email.checkValidity() || !email) { say(MSG.invalid_email); form.email.focus(); return; }
+    if (!form.consent.checked) { say(MSG.consent_required); form.consent.focus(); return; }
+    btn.disabled = true; say('Sending…');
+    fetch(form.action, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ email: email, consent: true, website: form.website.value })
+    }).then(function (r) { return r.json().catch(function () { return {}; }); })
+      .then(function (d) {
+        if (d && d.ok) { say(MSG.ok); form.reset(); }
+        else say(MSG[d && d.error] || MSG.error);
+      })
+      .catch(function () { say(MSG.error); })
+      .then(function () { btn.disabled = false; });
+  });
+})();
 </script>
 </body>
 </html>
