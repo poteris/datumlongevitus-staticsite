@@ -8,6 +8,7 @@
     "typecheck": "tsc",
     "kv:create": "wrangler kv namespace create datum-website-signups",
     "secret:token": "wrangler secret put TOKEN_SECRET",
+    "secret:turnstile": "wrangler secret put TURNSTILE_SECRET",
     "signups:list": "wrangler kv key list --binding SIGNUPS --remote",
     "tail": "wrangler tail"
   },
