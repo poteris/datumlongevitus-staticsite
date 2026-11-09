@@ -1,0 +1,4 @@
+# Copy to .dev.vars for `npm run dev`. Never commit .dev.vars.
+TOKEN_SECRET=change-me-to-a-long-random-string
+SIGNUP_ENABLED=true
+SITE_URL=http://localhost:8787

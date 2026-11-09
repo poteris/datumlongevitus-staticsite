@@ -1,0 +1,28 @@
+{
+  "name": "datumlongevitus-site",
+  "version": "1.0.0",
+  "description": "Datum Longevitus website: static site + Cloudflare Worker for the DPIA signup",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc",
+    "kv:create": "wrangler kv namespace create datum-website-signups",
+    "secret:token": "wrangler secret put TOKEN_SECRET",
+    "signups:list": "wrangler kv key list --binding SIGNUPS --remote",
+    "tail": "wrangler tail"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/poteris/datumlongevitus-staticsite.git"
+  },
+  "bugs": {
+    "url": "https://github.com/poteris/datumlongevitus-staticsite/issues"
+  },
+  "homepage": "https://github.com/poteris/datumlongevitus-staticsite#readme",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261109.1",
+    "typescript": "^7.0.2",
+    "wrangler": "^4.158.0"
+  },
+  "private": true
+}
