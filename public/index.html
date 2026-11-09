@@ -1112,8 +1112,8 @@ html{scroll-behavior:smooth}
 <div class="signup"><input id="pa-email" name="email" type="email" required placeholder="you@organisation.org" autocomplete="email"><button type="submit">SUBSCRIBE</button></div>
 <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
 <label class="consent"><input type="checkbox" name="consent" required> Email me the DPIA screening questions and occasional updates from Datum Longevitus.</label>
-<!-- Turnstile site key: replace the test key below with the real one from the Cloudflare dashboard. -->
-<div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="dark" data-size="flexible" data-appearance="interaction-only"></div>
+<!-- data-sitekey is filled in by the Worker from TURNSTILE_SITE_KEY. -->
+<div class="cf-turnstile" data-sitekey="" data-theme="dark" data-size="flexible" data-appearance="interaction-only"></div>
 <p class="signup-status" role="status" aria-live="polite"></p>
 <p class="fine">We will only use your email address to send you updates from Datum Longevitus. You can unsubscribe at any time. See our privacy notice for details.</p>
 </form>

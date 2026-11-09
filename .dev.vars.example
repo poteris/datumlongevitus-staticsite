@@ -2,5 +2,6 @@
 TOKEN_SECRET=change-me-to-a-long-random-string
 SIGNUP_ENABLED=true
 SITE_URL=http://localhost:8787
-# Cloudflare's always-pass Turnstile test secret; pairs with the test site key in index.html.
+# Cloudflare's always-pass Turnstile test keys.
+TURNSTILE_SITE_KEY=1x00000000000000000000AA
 TURNSTILE_SECRET=1x0000000000000000000000000000000AA

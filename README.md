@@ -29,7 +29,7 @@ All resources are prefixed `datum-` so they're easy to find in the Poteris accou
 1. **Install and log in:** `npm install`, then `npx wrangler login`.
 2. **KV namespace:** `npm run kv:create` (creates `datum-website-signups`), then paste the printed `id` into `kv_namespaces` in `wrangler.jsonc`.
 3. **Token secret:** `openssl rand -base64 48 | npx wrangler secret put TOKEN_SECRET` (after the first deploy, so the Worker exists).
-4. **Turnstile:** in the dashboard, Turnstile → Add widget, name it `datum-website`, add hostnames `datumlongevitus.org` and `www.datumlongevitus.org`, widget mode Managed. Put the **site key** in `public/index.html` (`data-sitekey` on the `.cf-turnstile` element, replacing the `1x000…AA` test key) and store the **secret key** with `npm run secret:turnstile`.
+4. **Turnstile:** in the dashboard, Turnstile → Add widget, name it `datum-website`, add hostnames `datumlongevitus.org` and `www.datumlongevitus.org`, widget mode Managed. Put the **site key** in `TURNSTILE_SITE_KEY` in `wrangler.jsonc` (replacing the `1x000…AA` test key; the Worker injects it into the page) and store the **secret key** with `npm run secret:turnstile`.
 5. **Email Sending:** in the dashboard, open Email Service and onboard `datumlongevitus.org` for **sending**. This adds MX/SPF on `cf-bounce.`, DKIM on `cf-bounce._domainkey.` and DMARC on `_dmarc.`; it does not touch the root MX records, so existing mail to info@ is unaffected. If a DMARC record already exists, keep one, not two.
 6. **Deploy:** connect this repo under Workers & Pages → Create → Import a repository (build command empty, deploy command `npx wrangler deploy`), or run `npm run deploy` locally.
 7. **Custom domain:** `routes` in `wrangler.jsonc` attaches `datumlongevitus.org` and `www.` on deploy; this needs the domain to be a zone in the same account.
@@ -43,7 +43,7 @@ cp .dev.vars.example .dev.vars
 npm run dev            # http://localhost:8787
 ```
 
-`.dev.vars.example` uses Cloudflare's always-pass Turnstile test secret, which pairs with the test site key. Emails are not sent locally; Wrangler prints the paths of the rendered text and HTML instead, including the confirmation link.
+`.dev.vars.example` uses Cloudflare's always-pass Turnstile test secret, which pairs with the test site key in the same file. Emails are not sent locally; Wrangler prints the paths of the rendered text and HTML instead, including the confirmation link.
 
 ## Exporting signups
 

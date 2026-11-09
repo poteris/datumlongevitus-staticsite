@@ -7,6 +7,7 @@ interface Env {
   SUBSCRIBE_LIMITER: RateLimit;
   TOKEN_SECRET: string;
   TURNSTILE_SECRET: string;
+  TURNSTILE_SITE_KEY: string;
   SITE_URL: string;
   FROM_ADDRESS: string;
   FROM_NAME: string;
@@ -41,9 +42,28 @@ export default {
     if (url.pathname === "/api/confirm") return confirm(url, env);
     // The PDF is only reachable through a valid confirmation link.
     if (url.pathname.startsWith("/downloads/")) return new Response("Not found", { status: 404 });
+    if (url.pathname === "/" || url.pathname === "/index.html") return withSiteKey(request, env);
     return env.ASSETS.fetch(request);
   },
 } satisfies ExportedHandler<Env>;
+
+// Inject the Turnstile site key from env into the page, so it isn't hard-coded in index.html.
+async function withSiteKey(request: Request, env: Env): Promise<Response> {
+  const res = await env.ASSETS.fetch(request);
+  if (!res.headers.get("content-type")?.includes("text/html")) return res;
+  const out = new HTMLRewriter()
+    .on(".cf-turnstile", {
+      element(el) {
+        el.setAttribute("data-sitekey", env.TURNSTILE_SITE_KEY ?? "");
+      },
+    })
+    .transform(res);
+  // The asset's ETag doesn't change when only the env var does, so don't let caches revalidate on it.
+  const headers = new Headers(out.headers);
+  headers.delete("etag");
+  headers.set("cache-control", "no-cache");
+  return new Response(out.body, { status: out.status, statusText: out.statusText, headers });
+}
 
 async function subscribe(request: Request, env: Env): Promise<Response> {
   if (env.SIGNUP_ENABLED !== "true") return json({ error: "disabled" }, 503);
