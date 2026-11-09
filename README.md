@@ -24,8 +24,10 @@ The PDF is in this repo, so anyone with access to the repo can read it; the gate
 
 ## One-time Cloudflare setup
 
+All resources are prefixed `datum-` so they're easy to find in the Poteris account: Worker `datum-website`, KV namespace `datum-website-signups`.
+
 1. **Install and log in:** `npm install`, then `npx wrangler login`.
-2. **KV namespace:** `npm run kv:create`, then paste the printed `id` into `kv_namespaces` in `wrangler.jsonc`.
+2. **KV namespace:** `npm run kv:create` (creates `datum-website-signups`), then paste the printed `id` into `kv_namespaces` in `wrangler.jsonc`.
 3. **Token secret:** `npm run secret:token` and paste a long random string (for example the output of `openssl rand -base64 48`).
 4. **Email Sending:** in the dashboard, open Email Service and onboard `datumlongevitus.org` for **sending**. This adds MX/SPF on `cf-bounce.`, DKIM on `cf-bounce._domainkey.` and DMARC on `_dmarc.`; it does not touch the root MX records, so existing mail to info@ is unaffected. If a DMARC record already exists, keep one, not two.
 5. **Deploy:** connect this repo under Workers & Pages → Create → Import a repository (build command empty, deploy command `npx wrangler deploy`), or run `npm run deploy` locally.

@@ -2,7 +2,7 @@
 // Everything in ./public is served as-is. The Worker only runs for /api/* and /downloads/*.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "datumlongevitus",
+  "name": "datum-website",
   "main": "src/worker.ts",
   "compatibility_date": "2026-11-01",
   "assets": {
